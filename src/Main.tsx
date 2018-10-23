@@ -1,4 +1,5 @@
-import React  from "react";
+import React from "react";
+import { Footer } from './Footer';
 import { Header } from './Header';
 
 // tslint:disable-next-line
@@ -54,28 +55,14 @@ export class Main extends React.Component<{}, {}> {
           </section>
         </section>
 
-        {/* footer */}
-        <footer className='footer'>
-          <span className='todo-count'>1 Todo left</span>
-          <ul className='filters'>
-            <li>
-              <a href='#' className='selected'>All</a>
-            </li>
-            <li>
-              <a href='#' className='selected'>Active</a>
-            </li>
-            <li>
-              <a href='#' className='selected'>Completed</a>
-            </li>                        
-          </ul>
-          <button
-            className="clear-completed"
-            onClick={debug('clear completed')}>
-            Clear completed
-          </button>          
-        </footer>
+        <Footer 
+          todoCount={1} 
+          clearCompleted={debug('clear completed')}
+        />
       </div>
     );
   }
 }
+
+
 
