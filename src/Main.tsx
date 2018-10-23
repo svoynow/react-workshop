@@ -1,27 +1,16 @@
-import * as React from "react";
+import React  from "react";
+import { Header } from './Header';
 
 // tslint:disable-next-line
-const debug = (msg: string) => () => console.log(msg);
+const debug = (msg: string) => (e:any) => console.log(msg, e);
 
-class Main extends React.Component<{}, {}> {
+export class Main extends React.Component<{}, {}> {
   render() {
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
-
-          {/* New TODO input */}
-          <header className="header">
-            <h1>todos</h1>
-            <input
-              className="new-todo"
-              placeholder="What needs to be done?"
-              autoFocus={true}
-              value={"Go Shopping"}
-              onChange={debug("new todo on change")}
-              onKeyDown={debug("new todo submit")}
-            />
-          </header>
-
+          <Header onSubmit={debug('submitted')} />
+          
           <section className="main">
             <input
               className="toggle-all"
@@ -90,4 +79,3 @@ class Main extends React.Component<{}, {}> {
   }
 }
 
-export default Main;
