@@ -2,6 +2,7 @@ import React from "react";
 import { Data } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
 // tslint:disable-next-line
@@ -10,12 +11,23 @@ const debug = (msg: string) => (e:any) => console.log(msg, e);
 
 export class Main extends React.Component<{ data: Data }, {}> {
 
+  editTodo = (todo: Todo) =>
+    this.props.data.updateTodo(todo);
+
+  deleteTodo = (todo: Todo) => 
+    this.props.data.removeTodo(todo);
+
+  createTodo = (title: string) =>
+    this.props.data.addTodo(Data.makeTodo(title)); 
+
+  toggleAll = () => this.props.data.toggleAll();
+
   render() {
     const todos = this.props.data.todos;
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
-          <Header onSubmit={debug('submitted')} />
+          <Header onSubmit={this.createTodo} />
           
           <section className="main">
             <input
@@ -23,7 +35,7 @@ export class Main extends React.Component<{ data: Data }, {}> {
               id="toggle-all"
               type="checkbox"
               checked={false}
-              onChange={debug("toggle all")}
+              onChange={this.toggleAll}
             />
             <label htmlFor="toggle-all">Mark all as complete</label>
 
@@ -33,8 +45,8 @@ export class Main extends React.Component<{ data: Data }, {}> {
                 <TodoItem
                   key={t.id}
                   todo={t}
-                  commitChange={debug('commit change')}
-                  destroy={debug('destroy')}                  
+                  commitChange={this.editTodo}
+                  destroy={this.deleteTodo}                  
                 />
               ))} 
 
