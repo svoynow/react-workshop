@@ -13,7 +13,7 @@ interface TodoItemState {
   editing: boolean,
 }
 
-export class TodoItem extends React.Component<TodoItemProps, TodoItemState> {
+export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> {
 
   constructor(props: TodoItemProps) {
     super(props); 
