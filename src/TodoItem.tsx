@@ -24,6 +24,9 @@ export class TodoItem extends React.Component<TodoItemProps, TodoItemState> {
   };
 
   handleSubmit = () => {
+    if (!this.state.editing) {
+      return;
+    };
     const { commitChange, todo } = this.props;
     const { input } = this.state;
     commitChange({ ...todo, title: input});

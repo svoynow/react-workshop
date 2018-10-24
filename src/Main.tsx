@@ -1,4 +1,5 @@
 import React from "react";
+import { Data } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { TodoItem } from './TodoItem';
@@ -6,21 +7,11 @@ import { TodoItem } from './TodoItem';
 // tslint:disable-next-line
 const debug = (msg: string) => (e:any) => console.log(msg, e);
 
-const todos = [
-  {
-    id: 'abdcd',
-    status: 'Active',
-    title: 'Go Shopping'
-  },
-  { 
-    id: 'xwdfs',
-    status: 'Completed',
-    title: 'Pay Visa'
-  }
-];
 
-export class Main extends React.Component<{}, {}> {
+export class Main extends React.Component<{ data: Data }, {}> {
+
   render() {
+    const todos = this.props.data.todos;
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
@@ -36,7 +27,6 @@ export class Main extends React.Component<{}, {}> {
             />
             <label htmlFor="toggle-all">Mark all as complete</label>
 
-            {/* TODO list */}
             <ul className="todo-list">
 
               {todos.map(t => (
