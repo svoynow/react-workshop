@@ -8,22 +8,33 @@ import { TodoItem } from './TodoItem';
 // tslint:disable-next-line
 const debug = (msg: string) => (e:any) => console.log(msg, e);
 
+const data = new Data([
+  Data.makeTodo('Go Shopping'),
+  Data.makeTodo('Pay Visa')
+]);
 
-export class Main extends React.Component<{ data: Data }, {}> {
+export class Main extends React.Component<{}, { data: Data }> {
 
-  editTodo = (todo: Todo) =>
-    this.props.data.updateTodo(todo);
+  state = { data };
 
-  deleteTodo = (todo: Todo) => 
-    this.props.data.removeTodo(todo);
+  editTodo = (todo: Todo) => {
+    this.state.data.updateTodo(todo);
+  }
 
-  createTodo = (title: string) =>
-    this.props.data.addTodo(Data.makeTodo(title)); 
+  deleteTodo = (todo: Todo) => {
+    this.state.data.removeTodo(todo);
+  }
 
-  toggleAll = () => this.props.data.toggleAll();
+  createTodo = (title: string) => {
+    this.state.data.addTodo(Data.makeTodo(title));     
+  }
+
+  toggleAll = () => { 
+    this.state.data.toggleAll();
+  }
 
   render() {
-    const todos = this.props.data.todos;
+    const todos = this.state.data.todos;
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
