@@ -19,18 +19,22 @@ export class Main extends React.Component<{}, { data: Data }> {
 
   editTodo = (todo: Todo) => {
     this.state.data.updateTodo(todo);
+    this.setState(this.state);
   }
 
   deleteTodo = (todo: Todo) => {
     this.state.data.removeTodo(todo);
+    this.setState(this.state);
   }
 
   createTodo = (title: string) => {
-    this.state.data.addTodo(Data.makeTodo(title));     
+    this.state.data.addTodo(Data.makeTodo(title));
+    this.setState(this.state);     
   }
 
   toggleAll = () => { 
     this.state.data.toggleAll();
+    this.setState(this.state);
   }
 
   render() {

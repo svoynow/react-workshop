@@ -59,12 +59,14 @@ export class TodoItem extends React.Component<TodoItemProps, TodoItemState> {
   };
     
   render() {
+    // tslint:disable no-console
+    console.log('rendering todo', this.props.todo.id);
     const { todo: { title, status } } = this.props;
     const { editing, input } = this.state;
     const classes = classNames({
       completed: status === 'Completed',
       editing
-    });
+    });    
     return (
       <li className={classes}>
       <div className="view">
