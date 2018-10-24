@@ -1,9 +1,9 @@
 
 interface TodoActive {
-  type: 'Active'
+  type: 'TodoActive'
 };
 
-export const todoActive: TodoActive = { type: 'Active' }
+export const todoActive: TodoActive = { type: 'TodoActive' }
 
 interface TodoComplete {
   type: 'TodoComplete'

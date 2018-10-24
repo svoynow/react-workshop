@@ -1,26 +1,34 @@
+import { Link } from '@reach/router'
 import React from 'react';
+import { 
+  NowShowing, 
+  showAll, 
+  todoActive, 
+  todoComplete 
+} from './interfaces'
 
 interface FooterProps {
   clearCompleted: React.EventHandler<React.FormEvent<HTMLButtonElement>>,
-  todoCount: number
+  todoCount: number,
+  nowShowing: NowShowing
 }
 
 export class Footer extends React.Component<FooterProps, {}> {
 
   render() {
-    const { todoCount, clearCompleted } = this.props;
+    const { todoCount, clearCompleted, nowShowing } = this.props;
     return (
       <footer className='footer'>
       <span className='todo-count'>{todoCount} Todo left</span>
       <ul className='filters'>
         <li>
-          <a href='#' className='selected'>All</a>
+          <Link to='/' className={nowShowing === showAll ? 'selected' : ''}>All</Link>         
         </li>
         <li>
-          <a href='#' className='selected'>Active</a>
+          <Link to='/active' className={nowShowing === todoActive ? 'selected' : ''}>Active</Link>          
         </li>
         <li>
-          <a href='#' className='selected'>Completed</a>
+          <Link to='/complete' className={nowShowing === todoComplete ? 'selected' : ''}>Completed</Link>          
         </li>                        
       </ul>
       <button

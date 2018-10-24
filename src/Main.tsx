@@ -1,3 +1,4 @@
+import { RouteComponentProps } from '@reach/router';
 import React from "react";
 import { 
   addTodo, 
@@ -21,32 +22,20 @@ const data = {
   ] 
 };
 
-export class Main extends React.Component<{nowShowing: NowShowing}, { data: Data }> {
+interface Props extends RouteComponentProps {
+  nowShowing: NowShowing
+};
+
+interface State {
+  data: Data
+}
+
+export class Main extends React.Component<Props, State> {
 
   state = { data };
 
-  editTodo = (todo: Todo) => {
-    this.setState({ data: updateTodo(this.state.data, todo) });
-  }
-
-  deleteTodo = (todo: Todo) => {
-    this.setState({ data: removeTodo(this.state.data, todo) });
-  }
-
-  createTodo = (title: string) => {
-    this.setState({ data: addTodo(this.state.data, makeTodo(title))});     
-  }
-
-  toggleAll = () => { 
-    this.setState({ data: toggleAll(this.state.data)})
-  }
-  
-  onClearCompleted = () => {
-    this.setState({ data: clearCompleted(this.state.data) })
-  }
-
   render() {
-    const todos = this.state.data.todos;
+    const todos = this.filteredTodos();
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
@@ -79,12 +68,39 @@ export class Main extends React.Component<{nowShowing: NowShowing}, { data: Data
 
         <Footer 
           todoCount={1} 
+          nowShowing={this.props.nowShowing}
           clearCompleted={this.onClearCompleted}
         />
       </div>
     );
   }
-}
 
+  private editTodo = (todo: Todo) => {
+    this.setState({ data: updateTodo(this.state.data, todo) });
+  }
 
+  private deleteTodo = (todo: Todo) => {
+    this.setState({ data: removeTodo(this.state.data, todo) });
+  }
 
+  private createTodo = (title: string) => {
+    this.setState({ data: addTodo(this.state.data, makeTodo(title))});     
+  }
+
+  private toggleAll = () => { 
+    this.setState({ data: toggleAll(this.state.data)})
+  }
+  
+  private onClearCompleted = () => {
+    this.setState({ data: clearCompleted(this.state.data) })
+  }
+
+  private filteredTodos = () => {
+    switch(this.props.nowShowing.type) {
+      case('ShowAll'): return this.state.data.todos
+      case('TodoActive'):
+      case('TodoComplete'): 
+        return this.state.data.todos.filter(t => t.status === this.props.nowShowing)    
+    }
+  } 
+};
