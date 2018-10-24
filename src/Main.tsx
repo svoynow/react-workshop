@@ -1,40 +1,48 @@
 import React from "react";
-import { Data } from './data';
+import { 
+  addTodo, 
+  clearCompleted,
+  Data,
+  makeTodo,
+  removeTodo,
+  toggleAll,
+  updateTodo,
+ } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
-// tslint:disable-next-line
-const debug = (msg: string) => (e:any) => console.log(msg, e);
 
-const data = new Data([
-  Data.makeTodo('Go Shopping'),
-  Data.makeTodo('Pay Visa')
-]);
+const data = {
+  todos: [
+    makeTodo('Go Shopping'),
+    makeTodo('Pay Visa')
+  ] 
+};
 
 export class Main extends React.Component<{}, { data: Data }> {
 
   state = { data };
 
   editTodo = (todo: Todo) => {
-    this.state.data.updateTodo(todo);
-    this.setState(this.state);
+    this.setState({ data: updateTodo(this.state.data, todo) });
   }
 
   deleteTodo = (todo: Todo) => {
-    this.state.data.removeTodo(todo);
-    this.setState(this.state);
+    this.setState({ data: removeTodo(this.state.data, todo) });
   }
 
   createTodo = (title: string) => {
-    this.state.data.addTodo(Data.makeTodo(title));
-    this.setState(this.state);     
+    this.setState({ data: addTodo(this.state.data, makeTodo(title))});     
   }
 
   toggleAll = () => { 
-    this.state.data.toggleAll();
-    this.setState(this.state);
+    this.setState({ data: toggleAll(this.state.data)})
+  }
+  
+  onClearCompleted = () => {
+    this.setState({ data: clearCompleted(this.state.data) })
   }
 
   render() {
@@ -71,7 +79,7 @@ export class Main extends React.Component<{}, { data: Data }> {
 
         <Footer 
           todoCount={1} 
-          clearCompleted={debug('clear completed')}
+          clearCompleted={this.onClearCompleted}
         />
       </div>
     );

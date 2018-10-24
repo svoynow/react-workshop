@@ -1,40 +1,36 @@
 import uuidv4 from 'uuid/v4'
 import { Todo } from './interfaces';
 
-// tslint:disable no-console
-export class Data {
+export interface Data {
+  todos: Todo[]
+};
 
-  static makeTodo = (title: string) => ({
+export const makeTodo = (title: string) => (
+  {
     id: uuidv4(),
     status: 'Active',
     title
-  });
-
-  todos: Todo[];
-
-  constructor(todos: Todo[]) {
-    this.todos = todos;
-  };
-
-  addTodo = (todo: Todo) => {
-    console.log('add todo', todo);
-    this.todos = [...this.todos, todo];
   }
+);
 
-  removeTodo = (todo: Todo ) => {
-    console.log('remove todo', todo);
-    this.todos = this.todos.filter(t => t.id !== todo.id);
-  }
+export const addTodo = (data: Data, todo: Todo) => (
+  { ...data, todos: [...data.todos, todo] }
+);
 
-  updateTodo = (todo: Todo) => {
-    console.log('update todo', todo);
-    this.todos = this.todos.map(t => t.id === todo.id ? todo : t);
-  }
+export const removeTodo = (data: Data, todo: Todo) => (
+  { ...data, todos: data.todos.filter(t => t.id !== todo.id) }
+);
 
-  toggleAll = () => {
-    console.log('toggle all todos');
-    const activeCount = this.todos.filter(t => t.status === 'Active').length;
-    const status = activeCount > 0 ? 'Completed' : 'Active';
-    this.todos = this.todos.map(t => ({ ...t, status }));
-  };
-}
+export const updateTodo = (data: Data, todo: Todo) => (
+  { ...data, todos: data.todos.map(t => t.id === todo.id ? todo : t) }
+);
+
+export const toggleAll = (data: Data) => {
+  const activeCount = data.todos.filter(t => t.status === 'Active').length;
+  const status = activeCount > 0 ? 'Completed' : 'Active';  
+  return { ...data, todos: data.todos.map(t => ({ ...t, status }))};
+};
+
+export const clearCompleted = (data: Data) => (
+  { ...data, todos: data.todos.filter(t => t.status === 'Active') }
+)
