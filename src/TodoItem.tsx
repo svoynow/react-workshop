@@ -1,6 +1,9 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Todo } from './interfaces';
+import { 
+  Todo, 
+  todoActive,
+  todoComplete } from './interfaces';
 
 interface TodoItemProps {
   todo: Todo,
@@ -54,7 +57,7 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
 
   toggle = () => {
     const { todo } = this.props
-    const status = todo.status === 'Completed' ? 'Active' : 'Completed';
+    const status = todo.status === todoComplete ? todoActive : todoComplete;
     this.props.commitChange({ ...todo, status });
   };
     
@@ -64,7 +67,7 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
     const { todo: { title, status } } = this.props;
     const { editing, input } = this.state;
     const classes = classNames({
-      completed: status === 'Completed',
+      completed: status === todoComplete,
       editing
     });    
     return (
@@ -73,7 +76,7 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
         <input
           className="toggle"
           type="checkbox"
-          checked={status === 'Completed'}
+          checked={status === todoComplete}
           onChange={this.toggle}
         />
         <label onDoubleClick={this.beginEdit}>

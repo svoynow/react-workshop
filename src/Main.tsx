@@ -10,7 +10,7 @@ import {
  } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import { Todo } from './interfaces';
+import { NowShowing, Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
 
@@ -21,7 +21,7 @@ const data = {
   ] 
 };
 
-export class Main extends React.Component<{}, { data: Data }> {
+export class Main extends React.Component<{nowShowing: NowShowing}, { data: Data }> {
 
   state = { data };
 

@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import { Todo } from './interfaces';
+import { Todo, todoActive, todoComplete } from './interfaces';
 
 export interface Data {
   todos: Todo[]
@@ -8,7 +8,7 @@ export interface Data {
 export const makeTodo = (title: string) => (
   {
     id: uuidv4(),
-    status: 'Active',
+    status: todoActive,
     title
   }
 );
@@ -26,11 +26,11 @@ export const updateTodo = (data: Data, todo: Todo) => (
 );
 
 export const toggleAll = (data: Data) => {
-  const activeCount = data.todos.filter(t => t.status === 'Active').length;
-  const status = activeCount > 0 ? 'Completed' : 'Active';  
+  const activeCount = data.todos.filter(t => t.status === todoActive).length;
+  const status = activeCount > 0 ? todoComplete : todoActive;  
   return { ...data, todos: data.todos.map(t => ({ ...t, status }))};
 };
 
 export const clearCompleted = (data: Data) => (
-  { ...data, todos: data.todos.filter(t => t.status === 'Active') }
+  { ...data, todos: data.todos.filter(t => t.status === todoActive) }
 )
