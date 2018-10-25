@@ -1,5 +1,6 @@
 import { Link } from '@reach/router'
 import React from 'react';
+import { Action, clearCompletedAction } from './actions'
 import { 
   NowShowing, 
   showAll, 
@@ -8,15 +9,18 @@ import {
 } from './interfaces'
 
 interface FooterProps {
-  clearCompleted: React.EventHandler<React.FormEvent<HTMLButtonElement>>,
+  dispatch: (a: Action) => void,
   todoCount: number,
   nowShowing: NowShowing
 }
 
 export class Footer extends React.Component<FooterProps, {}> {
 
+  onClearCompleted = () =>
+    this.props.dispatch(clearCompletedAction)
+
   render() {
-    const { todoCount, clearCompleted, nowShowing } = this.props;
+    const { todoCount, nowShowing } = this.props;
     return (
       <footer className='footer'>
       <span className='todo-count'>{todoCount} Todo left</span>
@@ -33,7 +37,7 @@ export class Footer extends React.Component<FooterProps, {}> {
       </ul>
       <button
         className="clear-completed"
-        onClick={clearCompleted}>
+        onClick={this.onClearCompleted}>
         Clear completed
       </button>          
     </footer>    

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
+import { Action, deleteTodoAction, editTodoAction } from './actions';
 import { 
   Todo, 
   todoActive,
@@ -7,8 +8,7 @@ import {
 
 interface TodoItemProps {
   todo: Todo,
-  commitChange: (t: Todo) => void,
-  destroy: (t: Todo) => void
+  dispatch: (a: Action) => void,
 }
 
 interface TodoItemState {
@@ -30,9 +30,9 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
     if (!this.state.editing) {
       return;
     };
-    const { commitChange, todo } = this.props;
+    const { dispatch, todo } = this.props;
     const { input } = this.state;
-    commitChange({ ...todo, title: input});
+    dispatch(editTodoAction({ ...todo, title: input}))
   };
 
   beginEdit = () =>
@@ -43,8 +43,10 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
     this.setState(state => ({ ...state, input }));
   }
 
-  onDestroy = () => 
-    this.props.destroy(this.props.todo);
+  onDestroy = () => {
+    const { dispatch, todo } = this.props;
+    dispatch(deleteTodoAction(todo));
+  };
 
   onInputKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const code = e.keyCode;
@@ -56,9 +58,9 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
   };
 
   toggle = () => {
-    const { todo } = this.props
+    const { todo, dispatch } = this.props
     const status = todo.status === todoComplete ? todoActive : todoComplete;
-    this.props.commitChange({ ...todo, status });
+    dispatch(editTodoAction({ ...todo, status }))    
   };
     
   render() {

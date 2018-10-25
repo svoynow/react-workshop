@@ -1,4 +1,6 @@
 import React from 'react';
+import { Action, createTodoAction } from './actions'
+import { makeTodo } from './data';
 
 
 interface HeaderState {
@@ -6,11 +8,14 @@ interface HeaderState {
 };
 
 interface HeaderProps {
-  onSubmit: (todoTitle: string) => void
+  dispatch: (a: Action) => void
 };
 
 export class Header extends React.Component<HeaderProps, HeaderState> {
   readonly state = { value: ''};
+
+  onSubmit = () => 
+    this.props.dispatch(createTodoAction(makeTodo(this.state.value)))
 
   handleInput = (event: React.ChangeEvent<HTMLInputElement>)  => {    
     this.setState({ value: event.target.value })
@@ -18,7 +23,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
-      this.props.onSubmit(this.state.value)
+      this.onSubmit();
       this.setState({ value: ''});
     }
   }
