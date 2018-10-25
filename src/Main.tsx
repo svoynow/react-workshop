@@ -4,6 +4,7 @@ import {
   addTodo, 
   clearCompleted,
   Data,
+  load,
   makeTodo,
   removeTodo,
   toggleAll,
@@ -15,13 +16,6 @@ import { NowShowing, Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
 
-const data = {
-  todos: [
-    makeTodo('Go Shopping'),
-    makeTodo('Pay Visa')
-  ] 
-};
-
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
 };
@@ -32,7 +26,11 @@ interface State {
 
 export class Main extends React.Component<Props, State> {
 
-  state = { data };
+  state: State = { data: { todos: [] } };
+
+  componentDidMount() {
+    this.setState({ data: load() })
+  }
 
   render() {
     const todos = this.filteredTodos();

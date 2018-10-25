@@ -19,6 +19,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
       this.props.onSubmit(this.state.value)
+      this.setState({ value: ''});
     }
   }
 
