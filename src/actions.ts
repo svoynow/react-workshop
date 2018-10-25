@@ -1,9 +1,8 @@
-import { Data } from './data';
 import { Todo } from './interfaces';
 
 interface LoadTodos {
   type: 'LoadTodos'
-  payload: Data
+  payload: Todo[]
 };
 
 interface CreateTodo {
@@ -34,7 +33,11 @@ interface EnterNewTodo {
   payload: string;
 };
 
-export const loadTodosAction = (payload: Data): LoadTodos => (
+interface ClearNewTodo {
+  type: 'ClearNewTodo'
+}
+
+export const loadTodosAction = (payload: Todo[]): LoadTodos => (
   { type: 'LoadTodos', payload}
 );
 
@@ -58,6 +61,8 @@ export const enterNewTodoAction = (payload: string): EnterNewTodo => (
   { type: 'EnterNewTodo', payload }
 );
 
+export const clearNewTodoAction: ClearNewTodo = { type: 'ClearNewTodo' }
+
 export type Action = 
     LoadTodos
   | CreateTodo
@@ -65,5 +70,6 @@ export type Action =
   | DeleteTodo
   | ToggleAll
   | ClearCompleted
-  | EnterNewTodo;
+  | EnterNewTodo
+  | ClearNewTodo;
 

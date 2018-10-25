@@ -1,6 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Action, createTodoAction, enterNewTodoAction } from './actions'
+import { 
+  Action, 
+  clearNewTodoAction,
+  createTodoAction, 
+  enterNewTodoAction 
+} from './actions'
 import { Data, makeTodo } from './data';
 
 interface HeaderProps {
@@ -9,8 +14,7 @@ interface HeaderProps {
 };
 
 export class Header extends React.PureComponent<HeaderProps, {}> {
-  readonly state = { value: ''};
-
+  
   onSubmit = () => {
     const { dispatch, value } = this.props
     dispatch(createTodoAction(makeTodo(value)))
@@ -24,7 +28,7 @@ export class Header extends React.PureComponent<HeaderProps, {}> {
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
       this.onSubmit();
-      this.props.dispatch(enterNewTodoAction('')) 
+      this.props.dispatch(clearNewTodoAction) 
     }
   }
 
@@ -36,7 +40,7 @@ export class Header extends React.PureComponent<HeaderProps, {}> {
         className="new-todo"
         placeholder="What needs to be done?"
         autoFocus={true}
-        value={this.state.value}
+        value={this.props.value}
         onChange={this.handleInput}
         onKeyDown={this.handleKeyDown}
       />

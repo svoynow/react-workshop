@@ -1,13 +1,13 @@
-import { Data } from './data';
+import { Todo } from './interfaces';
 
 const storageKey = 'typescript-todo-mvc';
 
-export const save = (data: Data) => 
-  localStorage.setItem(storageKey, JSON.stringify(data));
+export const save = (todos: Todo[]) => 
+  localStorage.setItem(storageKey, JSON.stringify(todos));
 
-export const load = (): Data => {
-  const data = localStorage.getItem(storageKey);
-  return data ? JSON.parse(data) : { todos: [] }
+export const load = (): Todo[] => {
+  const todos = localStorage.getItem(storageKey);
+  return todos ? JSON.parse(todos) : []
 };
   
 
