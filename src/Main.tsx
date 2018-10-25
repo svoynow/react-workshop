@@ -1,14 +1,18 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
+import { Action,
+  clearCompletedAction,
+  createTodoAction,
+  deleteTodoAction,
+  editTodoAction,
+  loadTodosAction,
+  processAction, 
+  toggleAllAction
+} from './actions';
 import { 
-  addTodo, 
-  clearCompleted,
   Data,
   load,
   makeTodo,
-  removeTodo,
-  toggleAll,
-  updateTodo,
  } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
@@ -28,8 +32,12 @@ export class Main extends React.Component<Props, State> {
 
   state: State = { data: { todos: [] } };
 
+  dispatch(action: Action) {
+    this.setState({ data: processAction(this.state.data, action)})
+  }
+
   componentDidMount() {
-    this.setState({ data: load() })
+    this.dispatch(loadTodosAction(load()))
   }
 
   render() {
@@ -74,23 +82,23 @@ export class Main extends React.Component<Props, State> {
   }
 
   private editTodo = (todo: Todo) => {
-    this.setState({ data: updateTodo(this.state.data, todo) });
+    this.dispatch(editTodoAction(todo))
   }
 
   private deleteTodo = (todo: Todo) => {
-    this.setState({ data: removeTodo(this.state.data, todo) });
+    this.dispatch(deleteTodoAction(todo));    
   }
 
   private createTodo = (title: string) => {
-    this.setState({ data: addTodo(this.state.data, makeTodo(title))});     
+    this.dispatch(createTodoAction(makeTodo(title)))
   }
 
   private toggleAll = () => { 
-    this.setState({ data: toggleAll(this.state.data)})
+    this.dispatch(toggleAllAction);
   }
   
   private onClearCompleted = () => {
-    this.setState({ data: clearCompleted(this.state.data) })
+    this.dispatch(clearCompletedAction);    
   }
 
   private filteredTodos = () => {
