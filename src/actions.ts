@@ -73,4 +73,5 @@ export const processAction = (data: Data, action: Action): Data => {
     case 'ToggleAll': return toggleAll(data)
     case 'ClearCompleted': return clearCompleted(data);
   }
+  return data;
 }

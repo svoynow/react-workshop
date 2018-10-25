@@ -1,8 +1,9 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
+import { connect } from 'react-redux';
 import { Action,
   loadTodosAction,
-  processAction, 
+  // processAction, 
   toggleAllAction
 } from './actions';
 import { 
@@ -11,28 +12,19 @@ import {
  } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import { NowShowing } from './interfaces';
+import { NowShowing, Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
-
 interface Props extends RouteComponentProps {
-  nowShowing: NowShowing
+  todos: Todo[]
+  nowShowing: NowShowing,
+  dispatch: (a: Action) => void
 };
 
-interface State {
-  data: Data
-}
-
-export class Main extends React.Component<Props, State> {
-
-  state: State = { data: { todos: [] } };
-
-  dispatch = (action: Action) => {    
-    this.setState({ data: processAction(this.state.data, action)})
-  }
+export class Main extends React.PureComponent<Props, {}> {
 
   componentDidMount() {
-    this.dispatch(loadTodosAction(load()))
+    this.props.dispatch(loadTodosAction(load()))
   }
 
   render() {
@@ -40,7 +32,7 @@ export class Main extends React.Component<Props, State> {
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
-          <Header dispatch={this.dispatch} />
+          <Header dispatch={this.props.dispatch} />
           
           <section className="main">
             <input
@@ -58,7 +50,7 @@ export class Main extends React.Component<Props, State> {
                 <TodoItem
                   key={t.id}
                   todo={t}
-                  dispatch={this.dispatch}                
+                  dispatch={this.props.dispatch}                
                 />
               ))} 
 
@@ -69,22 +61,35 @@ export class Main extends React.Component<Props, State> {
         <Footer 
           todoCount={1} 
           nowShowing={this.props.nowShowing}
-          dispatch={this.dispatch}
+          dispatch={this.props.dispatch}
         />
       </div>
     );
   }
 
   private toggleAll = () => { 
-    this.dispatch(toggleAllAction);
+    this.props.dispatch(toggleAllAction);
   }
   
   private filteredTodos = () => {
+    const { nowShowing, todos} = this.props
     switch(this.props.nowShowing.type) {
-      case('ShowAll'): return this.state.data.todos
+      case('ShowAll'): return todos
       case('TodoActive'):
       case('TodoComplete'): 
-        return this.state.data.todos.filter(t => t.status === this.props.nowShowing)    
+        return todos.filter(t => t.status === nowShowing)    
     }
   } 
 };
+
+// connected component
+
+interface ContainerProps extends RouteComponentProps {
+  nowShowing: NowShowing
+};
+
+const mapStateToProps = (state: Data, ownProps: ContainerProps) => (
+  { ...ownProps, todos: state.todos }
+)
+
+export const MainContainer = connect(mapStateToProps)(Main);
