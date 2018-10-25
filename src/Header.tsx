@@ -1,30 +1,30 @@
 import React from 'react';
-import { Action, createTodoAction } from './actions'
-import { makeTodo } from './data';
-
-
-interface HeaderState {
-  value: string
-};
+import { connect } from 'react-redux';
+import { Action, createTodoAction, enterNewTodoAction } from './actions'
+import { Data, makeTodo } from './data';
 
 interface HeaderProps {
+  value: string
   dispatch: (a: Action) => void
 };
 
-export class Header extends React.Component<HeaderProps, HeaderState> {
+export class Header extends React.PureComponent<HeaderProps, {}> {
   readonly state = { value: ''};
 
-  onSubmit = () => 
-    this.props.dispatch(createTodoAction(makeTodo(this.state.value)))
+  onSubmit = () => {
+    const { dispatch, value } = this.props
+    dispatch(createTodoAction(makeTodo(value)))
+  }
 
-  handleInput = (event: React.ChangeEvent<HTMLInputElement>)  => {    
-    this.setState({ value: event.target.value })
+  handleInput = (event: React.ChangeEvent<HTMLInputElement>)  => {
+    const value  = event.target.value
+    this.props.dispatch(enterNewTodoAction(value))        
   };
 
   handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.keyCode === 13) {
       this.onSubmit();
-      this.setState({ value: ''});
+      this.props.dispatch(enterNewTodoAction('')) 
     }
   }
 
@@ -44,3 +44,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     )
   }
 }
+
+const mapStateToProps = (state: Data, ownProps: {}) => (
+  { ...ownProps, value: state.newTodo }
+);
+
+export const HeaderContainer = connect(mapStateToProps)(Header)

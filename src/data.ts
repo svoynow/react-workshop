@@ -7,6 +7,8 @@ import {
 
 export interface Data {
   todos: Todo[]
+  newTodo: string,
+  nowEditing: Todo | null
 };
 
 export const makeTodo = (title: string) => (

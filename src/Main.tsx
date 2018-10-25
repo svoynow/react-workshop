@@ -11,7 +11,7 @@ import {
   load,
  } from './data';
 import { Footer } from './Footer';
-import { Header } from './Header';
+import { HeaderContainer } from './Header';
 import { NowShowing, Todo } from './interfaces';
 import { TodoItem } from './TodoItem';
 
@@ -32,7 +32,7 @@ export class Main extends React.PureComponent<Props, {}> {
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
-          <Header dispatch={this.props.dispatch} />
+          <HeaderContainer />
           
           <section className="main">
             <input

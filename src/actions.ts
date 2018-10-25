@@ -1,11 +1,4 @@
-import { 
-  addTodo,
-  clearCompleted,
-  Data,
-  removeTodo,
-  toggleAll,
-  updateTodo
-} from './data';
+import { Data } from './data';
 import { Todo } from './interfaces';
 
 interface LoadTodos {
@@ -34,7 +27,12 @@ interface ToggleAll {
 
 interface ClearCompleted {
   type: 'ClearCompleted';
-}
+};
+
+interface EnterNewTodo {
+  type: 'EnterNewTodo',
+  payload: string;
+};
 
 export const loadTodosAction = (payload: Data): LoadTodos => (
   { type: 'LoadTodos', payload}
@@ -56,22 +54,16 @@ export const toggleAllAction: ToggleAll = { type: 'ToggleAll' };
 
 export const clearCompletedAction: ClearCompleted = { type: 'ClearCompleted' };
 
+export const enterNewTodoAction = (payload: string): EnterNewTodo => (
+  { type: 'EnterNewTodo', payload }
+);
+
 export type Action = 
     LoadTodos
   | CreateTodo
   | EditTodo
   | DeleteTodo
   | ToggleAll
-  | ClearCompleted;
+  | ClearCompleted
+  | EnterNewTodo;
 
-export const processAction = (data: Data, action: Action): Data => {
-  switch(action.type) {
-    case 'LoadTodos': return action.payload
-    case 'CreateTodo': return addTodo(data, action.payload)
-    case 'EditTodo': return updateTodo(data, action.payload)
-    case 'DeleteTodo': return removeTodo(data, action.payload)
-    case 'ToggleAll': return toggleAll(data)
-    case 'ClearCompleted': return clearCompleted(data);
-  }
-  return data;
-}
