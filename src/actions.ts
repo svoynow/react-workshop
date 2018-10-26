@@ -96,17 +96,27 @@ export const finishEditingAction = (payload: Todo): FinishEditing => (
 
 export const cancelEditingAction: CancelEditing = { type: 'CancelEditing' };
 
-export type Action = 
+export type TodosAction =
     LoadTodos
   | CreateTodo
   | EditTodo
+  | FinishEditing
   | DeleteTodo
   | ToggleAll
   | ClearCompleted
-  | EnterNewTodo
+
+export type NewTodoAction =
+    EnterNewTodo
   | ClearNewTodo
-  | StartEditing
+
+export type UpdateTodoAction =
+    StartEditing
   | UpdateEditing
   | FinishEditing
-  | CancelEditing;
+  | CancelEditing
 
+export type Action = 
+    TodosAction 
+  | NewTodoAction 
+  | UpdateTodoAction
+  

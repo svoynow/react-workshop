@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import { Action } from './actions';
-import { save } from './data';
+import { Action, NewTodoAction, TodosAction, UpdateTodoAction } from './actions';
+import { Data, save } from './data';
 import { Todo, todoActive, todoComplete } from './interfaces';
 
 
-const todosReducer = (todos: Todo[] = [], action: Action): Todo[] => {
+const todosReducer = (todos: Todo[] = [], action: TodosAction): Todo[] => {
   switch(action.type) {
     case 'LoadTodos': 
       return action.payload;
@@ -25,33 +25,33 @@ const todosReducer = (todos: Todo[] = [], action: Action): Todo[] => {
       return save(todos.map(t => ({ ...t, status })));
 
     case 'ClearCompleted': 
-      return save(todos.filter(t => t.status === todoActive));    
-    
+      return save(todos.filter(t => t.status === todoActive));  
+      
+    default: return todos;      
   }
-  return todos;  
 }
 
-const newTodoReducer = (title: string = '', action: Action): string => {
+const newTodoReducer = (title: string = '', action: NewTodoAction): string => {
   switch(action.type) {
     case 'EnterNewTodo': 
       return action.payload;
     case 'ClearNewTodo': 
       return '';
+    default: return title;
   }
-  return title;
 }
 
-const editingReducer = (editing: Todo | null = null, action: Action): Todo | null => {
+const editingReducer = (editing: Todo | null = null, action: UpdateTodoAction): Todo | null => {
   switch(action.type) {
     case 'StartEditing': return action.payload;
     case 'UpdateEditing': return editing ? { ...editing, title: action.payload } : null;
-    case 'FinishEditing': return null
-    case 'CancelEditing': return null
+    case 'FinishEditing': return null;
+    case 'CancelEditing': return null;
+    default: return editing;
   } 
-  return editing; 
 }
  
-export const reducer = combineReducers({
+export const reducer = combineReducers<Data, Action>({
   newTodo: newTodoReducer,
   nowEditing: editingReducer,
   todos: todosReducer
