@@ -25,11 +25,14 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.7",
+    "@types/jest": "^22",
     "@types/node": "^10.12.0",
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
+    "jest": "^22",
+    "jest-localstorage-mock": "^2.3.0",
     "prettier": "^1.14.3",
+    "ts-jest": "^22",
     "typescript": "^3.1.3"
   }
 }
