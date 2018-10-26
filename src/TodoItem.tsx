@@ -1,46 +1,45 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Action, deleteTodoAction, editTodoAction } from './actions';
+import { connect } from 'react-redux';
+import { 
+  Action, 
+  cancelEditingAction, 
+  deleteTodoAction, 
+  editTodoAction, 
+  finishEditingAction, 
+  startEditingAction, 
+  updateEditingAction } from './actions';
+import { Data } from './data';
 import { 
   Todo, 
   todoActive,
   todoComplete } from './interfaces';
 
 interface TodoItemProps {
+  editing: Todo | null,
   todo: Todo,
   dispatch: (a: Action) => void,
 }
 
-interface TodoItemState {
-  input: string,
-  editing: boolean,
-}
-
-export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> {
-
-  constructor(props: TodoItemProps) {
-    super(props); 
-    this.state = {
-      editing: false,
-      input: this.props.todo.title,      
-    };   
-  };
+export class TodoItem extends React.PureComponent<TodoItemProps, {}> {
 
   handleSubmit = () => {
-    if (!this.state.editing) {
+    if (!this.props.editing) {
       return;
     };
     const { dispatch, todo } = this.props;
-    const { input } = this.state;
-    dispatch(editTodoAction({ ...todo, title: input}))
+    dispatch(finishEditingAction({ ...todo, title: this.props.editing.title}))
   };
 
-  beginEdit = () =>
-    this.setState(state => ({ ...state, editing: true }));
-
+  beginEdit = () => {
+    const { dispatch, todo } = this.props;
+    dispatch(startEditingAction(todo)); 
+  };
+    
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { dispatch } = this.props;
     const input = e.currentTarget.value;
-    this.setState(state => ({ ...state, input }));
+    dispatch(updateEditingAction(input));
   }
 
   onDestroy = () => {
@@ -49,10 +48,11 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
   };
 
   onInputKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { dispatch } = this.props;
     const code = e.keyCode;
     switch(code) {
       case 13: this.handleSubmit();
-      case 27: this.setState(state => ({ ...state, editing: false }));
+      case 27: dispatch(cancelEditingAction);        
       default: return; 
     };
   };
@@ -66,10 +66,10 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
   render() {
     // tslint:disable no-console
     console.log('rendering todo', this.props.todo.id);
-    const { todo: { title, status } } = this.props;
-    const { editing, input } = this.state;
+    const { todo: { title, status }, editing } = this.props;
+    const input = editing ? editing.title : title;
     const classes = classNames({
-      completed: status === todoComplete,
+      completed: status.type === todoComplete.type,
       editing
     });    
     return (
@@ -101,3 +101,16 @@ export class TodoItem extends React.PureComponent<TodoItemProps, TodoItemState> 
     )     
   }
 }
+
+interface TodoItemContainerProps {
+  todoId: string
+};
+
+const mapStateToProps = (state: Data, ownProps: TodoItemContainerProps) => (
+  { ...ownProps,
+    editing: (state.nowEditing && state.nowEditing.id === ownProps.todoId) ? state.nowEditing : null,
+    todo: state.todos.filter(t => t.id === ownProps.todoId)[0], 
+  }
+);
+
+export const TodoItemContainer = connect(mapStateToProps)(TodoItem)

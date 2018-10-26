@@ -37,6 +37,25 @@ interface ClearNewTodo {
   type: 'ClearNewTodo'
 }
 
+interface StartEditing {
+  type: 'StartEditing',
+  payload: Todo
+};
+
+interface UpdateEditing {
+  type: 'UpdateEditing',
+  payload: string
+};
+
+interface FinishEditing {
+  type: 'FinishEditing',
+  payload: Todo
+};
+
+interface CancelEditing {
+  type: 'CancelEditing'
+};
+
 export const loadTodosAction = (payload: Todo[]): LoadTodos => (
   { type: 'LoadTodos', payload}
 );
@@ -63,6 +82,20 @@ export const enterNewTodoAction = (payload: string): EnterNewTodo => (
 
 export const clearNewTodoAction: ClearNewTodo = { type: 'ClearNewTodo' }
 
+export const startEditingAction = (payload: Todo): StartEditing => (
+  { type: 'StartEditing', payload }
+);
+
+export const updateEditingAction = (payload: string): UpdateEditing => (
+  { type: 'UpdateEditing', payload }
+);
+
+export const finishEditingAction = (payload: Todo): FinishEditing => (
+  { type: 'FinishEditing', payload }
+);
+
+export const cancelEditingAction: CancelEditing = { type: 'CancelEditing' };
+
 export type Action = 
     LoadTodos
   | CreateTodo
@@ -71,5 +104,9 @@ export type Action =
   | ToggleAll
   | ClearCompleted
   | EnterNewTodo
-  | ClearNewTodo;
+  | ClearNewTodo
+  | StartEditing
+  | UpdateEditing
+  | FinishEditing
+  | CancelEditing;
 

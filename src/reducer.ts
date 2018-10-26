@@ -13,6 +13,7 @@ const todosReducer = (todos: Todo[] = [], action: Action): Todo[] => {
       return save([...todos, action.payload]);
 
     case 'EditTodo': 
+    case 'FinishEditing':
       return save(todos.map(t => t.id === action.payload.id ? action.payload : t));
 
     case 'DeleteTodo': 
@@ -25,6 +26,7 @@ const todosReducer = (todos: Todo[] = [], action: Action): Todo[] => {
 
     case 'ClearCompleted': 
       return save(todos.filter(t => t.status === todoActive));    
+    
   }
   return todos;  
 }
@@ -39,7 +41,18 @@ const newTodoReducer = (title: string = '', action: Action): string => {
   return title;
 }
 
+const editingReducer = (editing: Todo | null = null, action: Action): Todo | null => {
+  switch(action.type) {
+    case 'StartEditing': return action.payload;
+    case 'UpdateEditing': return editing ? { ...editing, title: action.payload } : null;
+    case 'FinishEditing': return null
+    case 'CancelEditing': return null
+  } 
+  return editing; 
+}
+ 
 export const reducer = combineReducers({
   newTodo: newTodoReducer,
-  todos: todosReducer,
+  nowEditing: editingReducer,
+  todos: todosReducer
 });

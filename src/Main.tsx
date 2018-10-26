@@ -13,7 +13,7 @@ import {
 import { Footer } from './Footer';
 import { HeaderContainer } from './Header';
 import { NowShowing, Todo } from './interfaces';
-import { TodoItem } from './TodoItem';
+import { TodoItemContainer } from './TodoItem';
 
 interface Props extends RouteComponentProps {
   todos: Todo[]
@@ -47,10 +47,9 @@ export class Main extends React.PureComponent<Props, {}> {
             <ul className="todo-list">
 
               {todos.map(t => (
-                <TodoItem
+                <TodoItemContainer
                   key={t.id}
-                  todo={t}
-                  dispatch={this.props.dispatch}                
+                  todoId={t.id}                  
                 />
               ))} 
 
@@ -77,7 +76,7 @@ export class Main extends React.PureComponent<Props, {}> {
       case('ShowAll'): return todos
       case('TodoActive'):
       case('TodoComplete'): 
-        return todos.filter(t => t.status === nowShowing)    
+        return todos.filter(t => t.status.type === nowShowing.type)    
     }
   } 
 };
