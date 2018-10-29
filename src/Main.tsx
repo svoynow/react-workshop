@@ -1,9 +1,23 @@
 import React from "react";
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { ListItem } from './ListItem';
 
 // tslint:disable-next-line
 const debug = (msg: string) => (e:any) => console.log(msg, e);
+
+const todos = [
+  {
+    completed: false,
+    id: 'abdcd',    
+    title: 'Go Shopping'
+  },
+  { 
+    completed: true,
+    id: 'xwdfs',
+    title: 'Pay Visa'
+  }
+];
 
 export class Main extends React.Component<{}, {}> {
   render() {
@@ -25,32 +39,16 @@ export class Main extends React.Component<{}, {}> {
             {/* TODO list */}
             <ul className="todo-list">
 
-              { /* single TODO */}
-              <li>
-                <div className="view">
-                  <input
-                    className="toggle"
-                    type="checkbox"
-                    checked={false}
-                    onChange={debug("item 1 change")}
-                  />
-                  <label onDoubleClick={debug("item 1 doubleclick")}>
-                    Pay Visa
-                  </label>
-                  <button
-                    className="destroy"
-                    onClick={debug("item 1 destroy")}
-                  />
-                </div>
-                <input
-                  className="edit"
-                  value="Pay Visa"
-                  name="title"
-                  onChange={debug("item 1 change")}
-                  onBlur={debug("item 1 edit commit")}
-                  onKeyDown={debug("item 1 keyDown")}
-                />
-              </li>
+            {todos.map(t => (
+              <ListItem 
+                key={t.id}
+                item={t}
+                handleToggle={debug(`Toggled: ${JSON.stringify(t)}`)}
+                handleDestroy={debug(`Destroyed: ${JSON.stringify(t)}`)}
+                handleEdit={debug(`Edited: ${JSON.stringify(t)}`)}
+              />
+            ))}
+
             </ul>
           </section>
         </section>
@@ -63,6 +61,4 @@ export class Main extends React.Component<{}, {}> {
     );
   }
 }
-
-
 
