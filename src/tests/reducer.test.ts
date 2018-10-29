@@ -1,9 +1,11 @@
+import { List } from 'immutable';
 import * as Actions from '../actions';
-import { Data, makeTodo } from '../data';
+import { Data } from '../data';
 import { todoActive, todoComplete } from '../interfaces';
 import { reducer } from '../reducer';
+import { makeTodo, Todo, todoFactory } from '../todo';
 
-const initialTodos = [
+const initialTodos: List<Todo> = List([
   {
     id: '1',
     status: todoActive,
@@ -14,7 +16,7 @@ const initialTodos = [
     status: todoComplete,
     title: 'Pay Visa'
   }
-];
+].map(todoFactory));
 
 const initialState = {  
   newTodo: '',
@@ -25,7 +27,7 @@ const initialState = {
 describe('TodosAction', () => {
 
   test('LoadTodos sets the todos in the state', () => {
-    const state: Data = { ...initialState, todos: [] };
+    const state: Data = { ...initialState, todos: List([]) };
     const newState = reducer(state, Actions.loadTodosAction(initialTodos));
     expect(newState).toEqual({ ...state, todos: initialTodos })
   });
@@ -33,12 +35,12 @@ describe('TodosAction', () => {
   test('CreateTodo adds a todo to the state', () => {
     const newTodo = makeTodo('Change the oil');
     const newState = reducer(initialState, Actions.createTodoAction(newTodo));
-    expect(newState).toEqual({ ...initialState, todos: [...initialState.todos, newTodo] })
+    expect(newState).toEqual({ ...initialState, todos: initialState.todos.push(newTodo) })
   });
 
   test('EditTodo modifies an existing todo', () => {
     const editedTodo = { ...initialTodos[0], status: todoComplete };
     const newState = reducer(initialState, Actions.editTodoAction(editedTodo));
-    expect(newState).toEqual({ ...initialState, todos: [editedTodo, initialTodos[1]] })
+    expect(newState).toEqual({ ...initialState, todos: initialTodos.set(0, editedTodo) })
   });
 });

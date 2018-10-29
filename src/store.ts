@@ -1,11 +1,14 @@
+import { List } from 'immutable';
 import { createStore } from "redux";
+import { Data } from './data';
 import { reducer } from './reducer';
 
-const initialState = {
+
+const initialState: Data = {
   newTodo: '',
   nowEditing: null,
-  todos: [],
-}
+  todos: List(),  
+};
 
 export const store = createStore(
   reducer, 

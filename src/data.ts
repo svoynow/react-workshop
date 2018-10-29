@@ -1,28 +1,20 @@
-import uuidv4 from 'uuid/v4'
-import { Todo, todoActive } from './interfaces';
+import { List } from 'immutable';
 import { 
   load as loadFromStorage,
   save as saveToStorage
 } from './storage';
+import { Todo } from './todo';
 
 export interface Data {
-  todos: Todo[]
+  todos: List<Todo>
   newTodo: string,
-  nowEditing: Todo | null
+  nowEditing: Todo | null  
 };
 
-export const makeTodo = (title: string) => (
-  {
-    id: uuidv4(),
-    status: todoActive,
-    title
-  }
-);
-
-export const load = (): Todo[] =>
+export const load = (): List<Todo> =>
   loadFromStorage();
 
-export const save = (todos: Todo[]) => {
+export const save = (todos: List<Todo>): List<Todo> => {
   saveToStorage(todos);
   return todos;
 };

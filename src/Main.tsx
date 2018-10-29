@@ -1,9 +1,9 @@
 import { RouteComponentProps } from '@reach/router';
+import { List } from 'immutable';
 import React from "react";
 import { connect } from 'react-redux';
 import { Action,
   loadTodosAction,
-  // processAction, 
   toggleAllAction
 } from './actions';
 import { 
@@ -12,11 +12,12 @@ import {
  } from './data';
 import { Footer } from './Footer';
 import { HeaderContainer } from './Header';
-import { NowShowing, Todo } from './interfaces';
+import { NowShowing } from './interfaces';
+import { Todo } from './todo'
 import { TodoItemContainer } from './TodoItem';
 
 interface Props extends RouteComponentProps {
-  todos: Todo[]
+  todos: List<Todo>,
   nowShowing: NowShowing,
   dispatch: (a: Action) => void
 };

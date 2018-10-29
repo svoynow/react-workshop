@@ -1,8 +1,9 @@
-import { Todo } from './interfaces';
+import { List } from 'immutable';
+import { Todo } from './todo';
 
 interface LoadTodos {
   type: 'LoadTodos'
-  payload: Todo[]
+  payload: List<Todo>
 };
 
 interface CreateTodo {
@@ -56,7 +57,7 @@ interface CancelEditing {
   type: 'CancelEditing'
 };
 
-export const loadTodosAction = (payload: Todo[]): LoadTodos => (
+export const loadTodosAction = (payload: List<Todo>): LoadTodos => (
   { type: 'LoadTodos', payload}
 );
 

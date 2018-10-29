@@ -11,9 +11,9 @@ import {
   updateEditingAction } from './actions';
 import { Data } from './data';
 import { 
-  Todo, 
   todoActive,
   todoComplete } from './interfaces';
+import { Todo } from './todo';
 
 interface TodoItemProps {
   editing: Todo | null,
@@ -28,7 +28,7 @@ export class TodoItem extends React.PureComponent<TodoItemProps, {}> {
       return;
     };
     const { dispatch, todo } = this.props;
-    dispatch(finishEditingAction({ ...todo, title: this.props.editing.title}))
+    dispatch(finishEditingAction(todo.merge({ title: this.props.editing.title})));
   };
 
   beginEdit = () => {
@@ -60,7 +60,7 @@ export class TodoItem extends React.PureComponent<TodoItemProps, {}> {
   toggle = () => {
     const { todo, dispatch } = this.props
     const status = todo.status === todoComplete ? todoActive : todoComplete;
-    dispatch(editTodoAction({ ...todo, status }))    
+    dispatch(editTodoAction(todo.merge({ status })))    
   };
     
   render() {
@@ -109,7 +109,7 @@ interface TodoItemContainerProps {
 const mapStateToProps = (state: Data, ownProps: TodoItemContainerProps) => (
   { ...ownProps,
     editing: (state.nowEditing && state.nowEditing.id === ownProps.todoId) ? state.nowEditing : null,
-    todo: state.todos.filter(t => t.id === ownProps.todoId)[0], 
+    todo: state.todos.filter(t => t.id === ownProps.todoId).first(), 
   }
 );
 

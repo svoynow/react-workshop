@@ -6,7 +6,8 @@ import {
   createTodoAction, 
   enterNewTodoAction 
 } from './actions'
-import { Data, makeTodo } from './data';
+import { Data } from './data';
+import { makeTodo } from './todo'
 
 interface HeaderProps {
   value: string
