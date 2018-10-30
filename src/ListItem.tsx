@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Todo } from './interfaces';
+import { flipStatus, Todo } from './interfaces';
  
 interface State {
     edit: boolean,
@@ -13,7 +13,7 @@ interface ListItemProps {
     handleEdit: (t: Todo) => void
 };
 
-export class ListItem extends React.Component<ListItemProps, State> {
+export class ListItem extends React.PureComponent<ListItemProps, State> {
     readonly state = { edit: false, value: this.props.item.title };
 
     handleChange = (event: React.ChangeEvent<HTMLInputElement>)  =>    
@@ -22,8 +22,9 @@ export class ListItem extends React.Component<ListItemProps, State> {
     handleDestroy = ()  => 
         this.props.handleDestroy(this.props.item)
 
-    handleToggle = () =>
-      this.props.handleEdit({ ...this.props.item, completed: !this.props.item.completed })
+    handleToggle = () => {      
+      this.props.handleEdit({ ...this.props.item, status: flipStatus(this.props.item.status) })
+    }
 
     handleSubmit = () =>
       this.props.handleEdit({...this.props.item, title: this.state.value})
@@ -40,9 +41,11 @@ export class ListItem extends React.Component<ListItemProps, State> {
     };
 
     render() {
-      const {} = this.props;
+    // tslint:disable no-console
+      const { item } = this.props;
+      console.log(`rendering item ${this.props.item.id}`);      
       const classes = classNames({
-        completed: this.props.item.completed,
+        completed: item.status.kind === 'Completed',
         editing: this.state.edit
       });
       return (
@@ -51,11 +54,11 @@ export class ListItem extends React.Component<ListItemProps, State> {
             <input
               className="toggle"
               type="checkbox"
-              checked={this.props.item.completed}
+              checked={item.status.kind === 'Completed'}
               onChange={this.handleToggle}
             />
             <label onDoubleClick={this.handleDoubleClick}>
-              {this.props.item.title}
+              {item.title}
             </label>
             <button
               className="destroy"

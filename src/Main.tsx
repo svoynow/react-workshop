@@ -1,8 +1,9 @@
+import { RouteComponentProps } from '@reach/router';
 import React from "react";
 import { addTodo, deleteCompleted, deleteTodo, makeTodo, toggleAll, updateTodo } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import { Todo } from './interfaces';
+import { NowShowing, Todo } from './interfaces';
 import { ListItem } from './ListItem';
 
 // tslint:disable no-console
@@ -12,10 +13,14 @@ interface State {
   data: Todo[]
 };
 
-export class Main extends React.PureComponent<{}, State> {
+interface Props extends RouteComponentProps {
+  nowShowing: NowShowing
+}
+
+export class Main extends React.PureComponent<Props, State> {
 
   state = {
-    data: [ makeTodo('laundry') ]  
+    data: [ makeTodo('laundry') ],
   };
 
   createTodo = (title: string) => {
@@ -38,6 +43,16 @@ export class Main extends React.PureComponent<{}, State> {
     this.setState({ data: deleteCompleted(this.state.data) });
   };
 
+  filterTodos = () => {
+    const { nowShowing } = this.props;
+    const { data } = this.state
+    if (nowShowing.kind === 'ShowAll') {
+      return data;
+    } else {
+      return data.filter(t => t.status.kind === nowShowing.kind);
+    }
+  }
+
   render() {
     debug('rendering main component')();
     return (
@@ -58,7 +73,7 @@ export class Main extends React.PureComponent<{}, State> {
             {/* TODO list */}
             <ul className="todo-list">
 
-            {this.state.data.map(t => (
+            {this.filterTodos().map(t => (
               <ListItem 
                 key={t.id}
                 item={t}
@@ -74,6 +89,7 @@ export class Main extends React.PureComponent<{}, State> {
         <Footer 
           todoCount={this.state.data.length} 
           clearCompleted={this.handleDeleteCompleted}
+          nowShowing={this.props.nowShowing}
         />
       </div>
     );

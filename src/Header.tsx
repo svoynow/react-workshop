@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface HeaderState {
   value: string
 };
@@ -24,6 +23,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render() {
+    // tslint:disable no-console
+    console.log("rendering header")
     return (
       <header className="header">
       <h1>todos</h1>
