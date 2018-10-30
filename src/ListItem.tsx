@@ -1,11 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-
-interface Todo {
-    id: string,
-    completed: boolean,
-    title: string
-};
+import { Todo } from './interfaces';
  
 interface State {
     edit: boolean,
@@ -14,7 +9,6 @@ interface State {
 
 interface ListItemProps {
     item: Todo,
-    handleToggle: (t: Todo) => void,
     handleDestroy: (t: Todo) => void,
     handleEdit: (t: Todo) => void
 };
@@ -22,29 +16,24 @@ interface ListItemProps {
 export class ListItem extends React.Component<ListItemProps, State> {
     readonly state = { edit: false, value: this.props.item.title };
 
-    handleChange = (event: React.ChangeEvent<HTMLInputElement>)  => {    
+    handleChange = (event: React.ChangeEvent<HTMLInputElement>)  =>    
         this.setState({ value: event.target.value } )
-    };
 
-    handleDestroy = ()  => {    
+    handleDestroy = ()  => 
         this.props.handleDestroy(this.props.item)
-    };
 
-    toggle = () => {
-      this.props.handleToggle(this.props.item)
-    };
+    handleToggle = () =>
+      this.props.handleEdit({ ...this.props.item, completed: !this.props.item.completed })
 
-    submit = () => {
+    handleSubmit = () =>
       this.props.handleEdit({...this.props.item, title: this.state.value})
-    };
 
-    handleDoubleClick = ()  => {    
+    handleDoubleClick = ()  => 
         this.setState({ edit: true } )
-    };
 
     handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.which === 13) {
-          this.submit();
+          this.handleSubmit();
         } else if (event.which === 27) {
           this.setState({edit: false, value: this.props.item.title}) 
         }
@@ -63,7 +52,7 @@ export class ListItem extends React.Component<ListItemProps, State> {
               className="toggle"
               type="checkbox"
               checked={this.props.item.completed}
-              onChange={this.toggle}
+              onChange={this.handleToggle}
             />
             <label onDoubleClick={this.handleDoubleClick}>
               {this.props.item.title}
@@ -78,7 +67,7 @@ export class ListItem extends React.Component<ListItemProps, State> {
             value={this.state.value}
             name="title"
             onChange={this.handleChange}
-            onBlur={this.submit}
+            onBlur={this.handleSubmit}
             onKeyDown={this.handleKeyDown}
           />
         </li>

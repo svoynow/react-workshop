@@ -1,30 +1,49 @@
 import React from "react";
+import { addTodo, deleteCompleted, deleteTodo, makeTodo, toggleAll, updateTodo } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import { Todo } from './interfaces';
 import { ListItem } from './ListItem';
 
-// tslint:disable-next-line
-const debug = (msg: string) => (e:any) => console.log(msg, e);
+// tslint:disable no-console
+const debug = (msg: string) => () => console.log(msg);
 
-const todos = [
-  {
-    completed: false,
-    id: 'abdcd',    
-    title: 'Go Shopping'
-  },
-  { 
-    completed: true,
-    id: 'xwdfs',
-    title: 'Pay Visa'
-  }
-];
+interface State {
+  data: Todo[]
+};
 
-export class Main extends React.Component<{}, {}> {
+export class Main extends React.PureComponent<{}, State> {
+
+  state = {
+    data: [ makeTodo('laundry') ]  
+  };
+
+  createTodo = (title: string) => {
+    this.setState({ data: addTodo(this.state.data, title) });
+  };
+
+  handleToggleAll = () => {
+    this.setState({ data: toggleAll(this.state.data) });
+  };
+
+  handleUpdateTodo = (todo: Todo) => {
+    this.setState({ data: updateTodo(this.state.data, todo) });
+  };
+
+  handleDeleteTodo = (todo: Todo) => {
+    this.setState({ data: deleteTodo(this.state.data, todo) });
+  };
+
+  handleDeleteCompleted = () => {
+    this.setState({ data: deleteCompleted(this.state.data) });
+  };
+
   render() {
+    debug('rendering main component')();
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
-          <Header onSubmit={debug('submitted')} />
+          <Header onSubmit={this.createTodo} />
           
           <section className="main">
             <input
@@ -32,20 +51,19 @@ export class Main extends React.Component<{}, {}> {
               id="toggle-all"
               type="checkbox"
               checked={false}
-              onChange={debug("toggle all")}
+              onChange={this.handleToggleAll}
             />
             <label htmlFor="toggle-all">Mark all as complete</label>
 
             {/* TODO list */}
             <ul className="todo-list">
 
-            {todos.map(t => (
+            {this.state.data.map(t => (
               <ListItem 
                 key={t.id}
                 item={t}
-                handleToggle={debug(`Toggled: ${JSON.stringify(t)}`)}
-                handleDestroy={debug(`Destroyed: ${JSON.stringify(t)}`)}
-                handleEdit={debug(`Edited: ${JSON.stringify(t)}`)}
+                handleEdit={this.handleUpdateTodo}
+                handleDestroy={this.handleDeleteTodo}
               />
             ))}
 
@@ -54,8 +72,8 @@ export class Main extends React.Component<{}, {}> {
         </section>
 
         <Footer 
-          todoCount={1} 
-          clearCompleted={debug('clear completed')}
+          todoCount={this.state.data.length} 
+          clearCompleted={this.handleDeleteCompleted}
         />
       </div>
     );
