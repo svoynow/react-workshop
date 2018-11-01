@@ -1,16 +1,15 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
+import { connect } from 'react-redux';
 import {
-  Action,
   addTodoAction,
   deleteTodoAction,
   fetchTodosAction,
-  processAction,
   toggleAllAction,
   updateTodoAction
 } from './actions'
-import { makeTodo } from './data';
-import { Footer } from './Footer';
+import { makeTodo, } from './data';
+import { FooterContainer } from './Footer';
 import { Header } from './Header';
 import { NowShowing, State, Todo } from './interfaces';
 import { ListItem } from './ListItem';
@@ -20,42 +19,38 @@ const debug = (msg: string) => () => console.log(msg);
 
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
+  data: Todo[],
+  addTodo: (t: Todo) => void,
+  deleteTodo: (t: Todo) => void,
+  fetchTodos: () => void,
+  toggleAll: (n: NowShowing) => void,
+  updateTodo: (t: Todo) => void 
 }
 
-export class Main extends React.PureComponent<Props, State> {
-
-  state = {
-    data: []
-  };
-
-  dispatch = (action: Action) => {
-    console.log('got action', action);
-    this.setState(processAction(action, this.state));
-  }; 
+export class Main extends React.PureComponent<Props, {}> {
 
   componentDidMount() {
-    this.dispatch(fetchTodosAction());  
+    this.props.fetchTodos();
   }
 
   createTodo = (title: string) => {
-    this.dispatch(addTodoAction(makeTodo(title)));
+    this.props.addTodo(makeTodo(title));
   };
 
   handleToggleAll = () => {
-    this.dispatch(toggleAllAction(this.props.nowShowing));
+    this.props.toggleAll(this.props.nowShowing);
   };
 
   handleUpdateTodo = (todo: Todo) => {
-    this.dispatch(updateTodoAction(todo));
+    this.props.updateTodo(todo);
   };
 
   handleDeleteTodo = (todo: Todo) => {
-    this.dispatch(deleteTodoAction(todo));
+    this.props.deleteTodo(todo);
   };
 
   filterTodos = (): Todo[] => {
-    const { nowShowing } = this.props;
-    const { data } = this.state
+    const { nowShowing, data } = this.props;
     if (nowShowing.kind === 'ShowAll') {
       return data;
     } else {
@@ -96,13 +91,26 @@ export class Main extends React.PureComponent<Props, State> {
           </section>
         </section>
 
-        <Footer 
-          todoCount={this.state.data.length} 
-          dispatch={this.dispatch}
+        <FooterContainer
+          todoCount={this.props.data.length}           
           nowShowing={this.props.nowShowing}
         />
       </div>
     );
   }
 }
+
+const mapStateToProps = (state: State) => {
+  return { data: state.data}
+};
+
+const mapDispatchToProps = {
+  addTodo: addTodoAction,
+  deleteTodo: deleteTodoAction,
+  fetchTodos: fetchTodosAction,
+  toggleAll: toggleAllAction,
+  updateTodo: updateTodoAction
+};
+
+export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main)
 

@@ -1,12 +1,4 @@
-import { 
-  addTodo,
-  deleteCompleted,
-  deleteTodo,
-  toggleAll,
-  updateTodo,
-} from './data';
-import { NowShowing, State, Todo } from './interfaces';
-import { loadTodos } from './storage';
+import { NowShowing, Todo } from './interfaces';
 
 interface AddTodoAction {
   type: 'AddTodo',
@@ -75,20 +67,5 @@ export type Action =
   | ToggleAllAction
   | ClearCompletedAction
 
-export const processAction = (action: Action, state: State): State => {
-  switch(action.type) {
-    case 'AddTodo': 
-      return { data: addTodo(state.data, action.payload.title)} 
-    case 'DeleteTodo': 
-      return { data: deleteTodo(state.data, action.payload)}
-    case 'FetchTodos': 
-      return { data: loadTodos() }
-    case 'UpdateTodo': 
-      return { data: updateTodo(state.data, action.payload)}
-    case 'ToggleAll': 
-      return { data: toggleAll(state.data) }
-    case 'ClearCompleted': 
-      return { data: deleteCompleted(state.data) }
-  };
-}
+
 
