@@ -24,3 +24,7 @@ export const showAll = ({ kind: 'ShowAll' });
 export type ShowAll = typeof showAll;
 
 export type NowShowing = Status | ShowAll;
+
+export interface State {
+  data: Todo[]
+};

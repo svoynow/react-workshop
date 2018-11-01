@@ -1,17 +1,22 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
-import { addTodo, deleteCompleted, deleteTodo, makeTodo, toggleAll, updateTodo } from './data';
+import {
+  Action,
+  addTodoAction,
+  deleteTodoAction,
+  fetchTodosAction,
+  processAction,
+  toggleAllAction,
+  updateTodoAction
+} from './actions'
+import { makeTodo } from './data';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import { NowShowing, Todo } from './interfaces';
+import { NowShowing, State, Todo } from './interfaces';
 import { ListItem } from './ListItem';
 
 // tslint:disable no-console
 const debug = (msg: string) => () => console.log(msg);
-
-interface State {
-  data: Todo[]
-};
 
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
@@ -20,36 +25,41 @@ interface Props extends RouteComponentProps {
 export class Main extends React.PureComponent<Props, State> {
 
   state = {
-    data: [ makeTodo('laundry') ],
+    data: []
   };
 
+  dispatch = (action: Action) => {
+    console.log('got action', action);
+    this.setState(processAction(action, this.state));
+  }; 
+
+  componentDidMount() {
+    this.dispatch(fetchTodosAction());  
+  }
+
   createTodo = (title: string) => {
-    this.setState({ data: addTodo(this.state.data, title) });
+    this.dispatch(addTodoAction(makeTodo(title)));
   };
 
   handleToggleAll = () => {
-    this.setState({ data: toggleAll(this.state.data) });
+    this.dispatch(toggleAllAction(this.props.nowShowing));
   };
 
   handleUpdateTodo = (todo: Todo) => {
-    this.setState({ data: updateTodo(this.state.data, todo) });
+    this.dispatch(updateTodoAction(todo));
   };
 
   handleDeleteTodo = (todo: Todo) => {
-    this.setState({ data: deleteTodo(this.state.data, todo) });
+    this.dispatch(deleteTodoAction(todo));
   };
 
-  handleDeleteCompleted = () => {
-    this.setState({ data: deleteCompleted(this.state.data) });
-  };
-
-  filterTodos = () => {
+  filterTodos = (): Todo[] => {
     const { nowShowing } = this.props;
     const { data } = this.state
     if (nowShowing.kind === 'ShowAll') {
       return data;
     } else {
-      return data.filter(t => t.status.kind === nowShowing.kind);
+      return data.filter((t: Todo) => t.status.kind === nowShowing.kind);
     }
   }
 
@@ -88,7 +98,7 @@ export class Main extends React.PureComponent<Props, State> {
 
         <Footer 
           todoCount={this.state.data.length} 
-          clearCompleted={this.handleDeleteCompleted}
+          dispatch={this.dispatch}
           nowShowing={this.props.nowShowing}
         />
       </div>

@@ -1,19 +1,23 @@
 import { Link } from '@reach/router';
 import React from 'react';
+import { Action, clearCompletedAction } from './actions';
 import { NowShowing } from './interfaces';
 
 interface FooterProps {
-  clearCompleted: React.EventHandler<React.FormEvent<HTMLButtonElement>>,
   nowShowing: NowShowing,
+  dispatch: (a: Action) => void,
   todoCount: number
 }
 
 export class Footer extends React.Component<FooterProps, {}> {
 
+  handleClearCompleted = () => 
+    this.props.dispatch(clearCompletedAction(this.props.nowShowing));
+
   render() {
     // tslint:disable no-console
     console.log("rendering footer")
-    const { todoCount, clearCompleted, nowShowing } = this.props;
+    const { todoCount, nowShowing } = this.props;
     return (
       <footer className='footer'>
       <span className='todo-count'>{todoCount} Todo left</span>
@@ -30,7 +34,7 @@ export class Footer extends React.Component<FooterProps, {}> {
       </ul>
       <button
         className="clear-completed"
-        onClick={clearCompleted}>
+        onClick={this.handleClearCompleted}>
         Clear completed
       </button>          
     </footer>    
