@@ -1,6 +1,6 @@
 import { Action } from './actions'
 import { makeTodo } from './data';
-import { State, Todo, todoActive } from './interfaces';
+import { State, Todo, todoActive, todoCompleted } from './interfaces';
 import { loadTodos, saveTodos } from './storage';
 
 export const addTodo = (todos: Todo[], title: string): Todo[] => {
@@ -23,7 +23,8 @@ export const updateTodo = (todos: Todo[], todo: Todo): Todo[] => {
 
 export const toggleAll = (todos: Todo[]): Todo[] => {
   const activeCount = todos.filter(t => t.status.kind === todoActive.kind).length;
-  const result = todos.map(t => ({ ...t, completed: activeCount > 0 }));
+  const newStatus = activeCount > 0 ? todoCompleted : todoActive
+  const result = todos.map(t => ({ ...t, status: newStatus }));
   saveTodos(result);
   return result;
 };
