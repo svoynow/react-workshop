@@ -1,14 +1,22 @@
-export interface Todo {
-  id: string,
+export interface NewTodo {
+  order: number
   status: Status,
   title: string
+}
+
+export interface Todo extends NewTodo {
+  id: string,
 };
 
-export const todoActive = ({ kind: 'Active' });
-export type Active = typeof todoActive
+interface Active {
+  kind: 'Active'
+}
+export const todoActive: Active = ({ kind: 'Active' });
 
-export const todoCompleted = ({ kind: 'Completed' });
-export type Completed = typeof todoCompleted
+interface Completed {
+  kind: 'Completed'
+}
+export const todoCompleted: Completed = ({ kind: 'Completed' });
 
 export type Status = Completed | Active;
 
@@ -17,7 +25,6 @@ export const flipStatus = (status: Status): Status => {
     case('Completed'): return todoActive;    
     case('Active'): return todoCompleted;
   }
-  return status;
 };
 
 export const showAll = ({ kind: 'ShowAll' });

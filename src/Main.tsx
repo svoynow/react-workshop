@@ -1,18 +1,18 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
 import { connect } from 'react-redux';
-import {
-  addTodoAction,
-  deleteTodoAction,
-  fetchTodosAction,
-  toggleAllAction,
-  updateTodoAction
-} from './actions'
-import { makeTodo, } from './data';
+import { filterTodos, makeTodo } from './data';
 import { FooterContainer } from './Footer';
 import { Header } from './Header';
-import { NowShowing, State, Todo } from './interfaces';
+import { NewTodo, NowShowing, State, Todo } from './interfaces';
 import { ListItem } from './ListItem';
+import {
+  addTodo,
+  deleteTodo,
+  fetchTodos,
+  toggleAll,
+  updateTodo
+} from './newActions'
 
 // tslint:disable no-console
 const debug = (msg: string) => () => console.log(msg);
@@ -20,10 +20,10 @@ const debug = (msg: string) => () => console.log(msg);
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
   data: Todo[],
-  addTodo: (t: Todo) => void,
+  addTodo: (t: NewTodo) => void,
   deleteTodo: (t: Todo) => void,
   fetchTodos: () => void,
-  toggleAll: (n: NowShowing) => void,
+  toggleAll: (ts: Todo[]) => void,
   updateTodo: (t: Todo) => void 
 }
 
@@ -32,13 +32,19 @@ export class Main extends React.PureComponent<Props, {}> {
   componentDidMount() {
     this.props.fetchTodos();
   }
-
+  
+  nextTodo = () => {
+    const orders = this.props.data.map(t => t.order);
+    return orders ? Math.max(...orders) + 1 : 0;
+  };
+    
   createTodo = (title: string) => {
-    this.props.addTodo(makeTodo(title));
+    this.props.addTodo(makeTodo(title, this.nextTodo()));
   };
 
   handleToggleAll = () => {
-    this.props.toggleAll(this.props.nowShowing);
+    const { data, nowShowing, toggleAll: toggle } = this.props;
+    toggle(filterTodos(data, nowShowing))
   };
 
   handleUpdateTodo = (todo: Todo) => {
@@ -49,17 +55,9 @@ export class Main extends React.PureComponent<Props, {}> {
     this.props.deleteTodo(todo);
   };
 
-  filterTodos = (): Todo[] => {
-    const { nowShowing, data } = this.props;
-    if (nowShowing.kind === 'ShowAll') {
-      return data;
-    } else {
-      return data.filter((t: Todo) => t.status.kind === nowShowing.kind);
-    }
-  }
-
   render() {
     debug('rendering main component')();
+    const { data, nowShowing } = this.props
     return (
       <div className="todomvc-wrapper">
         <section className="todoapp">
@@ -78,7 +76,7 @@ export class Main extends React.PureComponent<Props, {}> {
             {/* TODO list */}
             <ul className="todo-list">
 
-            {this.filterTodos().map(t => (
+            {filterTodos(data, nowShowing).map(t => (
               <ListItem 
                 key={t.id}
                 item={t}
@@ -92,8 +90,8 @@ export class Main extends React.PureComponent<Props, {}> {
         </section>
 
         <FooterContainer
-          todoCount={this.props.data.length}           
-          nowShowing={this.props.nowShowing}
+          todoCount={data.length}           
+          nowShowing={nowShowing}
         />
       </div>
     );
@@ -105,11 +103,11 @@ const mapStateToProps = (state: State) => {
 };
 
 const mapDispatchToProps = {
-  addTodo: addTodoAction,
-  deleteTodo: deleteTodoAction,
-  fetchTodos: fetchTodosAction,
-  toggleAll: toggleAllAction,
-  updateTodo: updateTodoAction
+  addTodo,
+  deleteTodo,
+  fetchTodos,
+  toggleAll,
+  updateTodo
 };
 
 export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main)

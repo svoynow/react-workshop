@@ -1,8 +1,8 @@
 import { Link } from '@reach/router';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Action, clearCompletedAction } from './actions';
 import { NowShowing } from './interfaces';
+import { clearCompleted, Dispatch } from './newActions';
 
 interface FooterProps {
   nowShowing: NowShowing,
@@ -13,7 +13,7 @@ interface FooterProps {
 export const Footer = (props: FooterProps) => {
   // tslint:disable no-console
   console.log("rendering footer")
-  const { todoCount, nowShowing, clearCompleted } = props;
+  const { todoCount, nowShowing, clearCompleted: clear } = props;
   return (
     <footer className='footer'>
     <span className='todo-count'>{todoCount} Todo left</span>
@@ -30,22 +30,21 @@ export const Footer = (props: FooterProps) => {
     </ul>
     <button
       className="clear-completed"
-      onClick={clearCompleted}>
+      onClick={clear}>
       Clear completed
     </button>          
   </footer>    
   );
 };
 
-
 interface FooterContainerProps {
   nowShowing: NowShowing,
   todoCount: number
 };
 
-const mapDispatchToProps = (dispatch: (a: Action) => void, ownProps: FooterContainerProps) => (
+const mapDispatchToProps = (dispatch: Dispatch, ownProps: FooterContainerProps) => (
   {
-    clearCompleted: () => dispatch(clearCompletedAction(ownProps.nowShowing))
+    clearCompleted: () => dispatch(clearCompleted(ownProps.nowShowing))
   }
 );
 
