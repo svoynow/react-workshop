@@ -1,53 +1,23 @@
-import { Action } from './actions'
-import { makeTodo } from './data';
-import { State, Todo, todoActive } from './interfaces';
-import { loadTodos, saveTodos } from './storage';
-
-export const addTodo = (todos: Todo[], title: string): Todo[] => {
-  const result = [...todos, makeTodo(title)];
-  saveTodos(result);
-  return result;
-}
-
-export const deleteTodo = (todos: Todo[], todo: Todo): Todo[] => {
-  const result = todos.filter(t => t.id !== todo.id);
-  saveTodos(result);
-  return result;
-}
-
-export const updateTodo = (todos: Todo[], todo: Todo): Todo[] => {
-  const result = todos.map(t => t.id === todo.id ? todo : t);
-  saveTodos(result);
-  return result;
-}
-
-export const toggleAll = (todos: Todo[]): Todo[] => {
-  const activeCount = todos.filter(t => t.status.kind === todoActive.kind).length;
-  const result = todos.map(t => ({ ...t, completed: activeCount > 0 }));
-  saveTodos(result);
-  return result;
-};
-
-export const deleteCompleted = (todos: Todo[]): Todo[] => {
-  const result = todos.filter(t => t.status.kind === todoActive.kind);
-  saveTodos(result);
-  return result;
-}
+import { State } from './interfaces';
+import { Action } from './newActions'
 
 export const processAction = (state: State = { data: [] }, action: Action): State => {
   switch(action.type) {
-    case 'AddTodo': 
-      return { data: addTodo(state.data, action.payload.title)} 
-    case 'DeleteTodo': 
-      return { data: deleteTodo(state.data, action.payload)}
-    case 'FetchTodos': 
-      return { data: loadTodos() }
-    case 'UpdateTodo': 
-      return { data: updateTodo(state.data, action.payload)}
-    case 'ToggleAll': 
-      return { data: toggleAll(state.data) }
-    case 'ClearCompleted': 
-      return { data: deleteCompleted(state.data) }
-  };
+    case 'DeleteTodoSuccess': 
+      return { data: state.data.filter(t => t.id !== action.payload.id) };
+    case 'CreateTodoSuccess':
+      return { data: [...state.data, action.payload] };
+    case 'UpdateTodoSuccess':
+      return { data: state.data.map(t => t.id === action.payload.id ? action.payload : t)};
+    case 'LoadTodosSuccess':
+      return { data: action.payload };  
+    case 'DeleteTodoFailure':
+    case 'CreateTodoFailure':
+    case 'UpdateTodoFailure':
+    case 'LoadTodosFailure':
+      // tslint:disable no-console
+      console.log(`error ${action}`); 
+      return state; 
+  }
   return state;
 }

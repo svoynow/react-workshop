@@ -1,17 +1,15 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
 import { connect } from 'react-redux';
-import {
-  addTodoAction,
-  deleteTodoAction,
-  fetchTodosAction,
-  toggleAllAction,
-  updateTodoAction
-} from './actions'
-import { makeTodo, } from './data';
+import { createTodo, 
+  deleteTodo, 
+  fetchTodos, 
+  toggleAll,
+  updateTodo } from './newActions';
+
 import { FooterContainer } from './Footer';
 import { Header } from './Header';
-import { NowShowing, State, Todo } from './interfaces';
+import { NowShowing, State, Todo  } from './interfaces';
 import { ListItem } from './ListItem';
 
 // tslint:disable no-console
@@ -20,10 +18,10 @@ const debug = (msg: string) => () => console.log(msg);
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
   data: Todo[],
-  addTodo: (t: Todo) => void,
+  addTodo: (t: string) => void,
   deleteTodo: (t: Todo) => void,
   fetchTodos: () => void,
-  toggleAll: (n: NowShowing) => void,
+  toggleAll: (t: Todo[]) => void,
   updateTodo: (t: Todo) => void 
 }
 
@@ -34,11 +32,11 @@ export class Main extends React.PureComponent<Props, {}> {
   }
 
   createTodo = (title: string) => {
-    this.props.addTodo(makeTodo(title));
+    this.props.addTodo(title);
   };
 
   handleToggleAll = () => {
-    this.props.toggleAll(this.props.nowShowing);
+    this.props.toggleAll(this.filterTodos());
   };
 
   handleUpdateTodo = (todo: Todo) => {
@@ -101,16 +99,17 @@ export class Main extends React.PureComponent<Props, {}> {
 }
 
 const mapStateToProps = (state: State) => {
-  return { data: state.data}
+  return { data: state.data }
 };
 
 const mapDispatchToProps = {
-  addTodo: addTodoAction,
-  deleteTodo: deleteTodoAction,
-  fetchTodos: fetchTodosAction,
-  toggleAll: toggleAllAction,
-  updateTodo: updateTodoAction
+  addTodo: createTodo,
+  deleteTodo,
+  fetchTodos,
+  toggleAll,
+  updateTodo
 };
 
-export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main)
+export const MainContainer = 
+  connect(mapStateToProps, mapDispatchToProps)(Main)
 

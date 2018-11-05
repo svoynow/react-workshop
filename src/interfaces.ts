@@ -1,7 +1,11 @@
-export interface Todo {
-  id: string,
+export interface NewTodo {
+  order: number,
   status: Status,
   title: string
+};
+
+export interface Todo extends NewTodo {
+  id: string
 };
 
 export const todoActive = ({ kind: 'Active' });
