@@ -1,10 +1,9 @@
 import { ThunkDispatch } from 'redux-thunk';
 import * as Api from './api';
-import { makeTodo } from './data';
-import { NowShowing, State, Todo, todoActive, todoCompleted } from './interfaces';
+import { NowShowing, State, Status, Todo, todoActive, todoCompleted } from './interfaces';
 
 export type Dispatch = ThunkDispatch<State, void, Action>;
-
+// tslint:disable no-console
 export const fetchTodos = () => {
   return (dispatch: Dispatch) => {
     Api.getAllTodos()
@@ -13,28 +12,27 @@ export const fetchTodos = () => {
   }
 };
 
-export const createTodo = (title: string) => {
+export const createTodo = (todo: Todo) => {
   return (dispatch: Dispatch) => {
-    Api.createTodo(makeTodo(title))
-      .then(todo => dispatch(createTodoSuccess(todo)) )
-      .catch(() => dispatch(createTodoFailure(title)))
+    Api.createTodo(todo)
+      .then(result => dispatch(createTodoSuccess(result)) )
+      .catch(() => dispatch(createTodoFailure(todo.title)))
   }
 };
 
 export const deleteTodo = (todo: Todo) => {
   return (dispatch: Dispatch) => {
+    console.log('deleteTodo')
     Api.deleteTodo(todo)
-      .then(result => dispatch(deleteTodoSuccess(result)))
+      .then(() => dispatch(deleteTodoSuccess(todo)))
       .catch(() => dispatch(deleteTodoFailure(todo.title)))
   }
 };
 
-export const toggleAll = (todos: Todo[]) => {
+export const toggleAll = (todos: Todo[], newStatus: Status) => {
   return (dispatch: Dispatch) => {
-    const activeCount = todos.filter(t => t.status === todoActive).length;
-    const status = activeCount > 0 ? todoCompleted : todoActive;  
     todos.forEach((todo: Todo) => {
-      Api.updateTodo({ ...todo, status })
+      Api.updateTodo({ ...todo, status: newStatus })
         .then(updated => dispatch(updateTodoSuccess(updated)))
         .catch(() => dispatch(updateTodoFailure(todo.title)))        
     });
@@ -67,14 +65,14 @@ interface DeleteTodoFailure {
   payload: string
 };
 
-const deleteTodoSuccess = (payload: Todo): DeleteTodoSuccess => (
+export const deleteTodoSuccess = (payload: Todo): DeleteTodoSuccess => (
   {
     payload,
     type: 'DeleteTodoSuccess'
   }
 )
 
-const deleteTodoFailure = (payload: string): DeleteTodoFailure => (
+export const deleteTodoFailure = (payload: string): DeleteTodoFailure => (
   {
     payload,
     type: 'DeleteTodoFailure'
@@ -100,14 +98,14 @@ interface UpdateTodoFailure {
   payload: string
 };
 
-const updateTodoSuccess = (payload: Todo): UpdateTodoSuccess => (
+export const updateTodoSuccess = (payload: Todo): UpdateTodoSuccess => (
   {
     payload,
     type: 'UpdateTodoSuccess'
   }
 )
 
-const updateTodoFailure = (payload: string): UpdateTodoFailure => (
+export const updateTodoFailure = (payload: string): UpdateTodoFailure => (
   {
     payload,
     type: 'UpdateTodoFailure'
@@ -124,14 +122,14 @@ interface CreateTodoFailure {
   payload: string
 };
 
-const createTodoSuccess = (payload: Todo): CreateTodoSuccess => (
+export const createTodoSuccess = (payload: Todo): CreateTodoSuccess => (
   {
     payload,
     type: 'CreateTodoSuccess'
   }
 )
 
-const createTodoFailure = (payload: string): CreateTodoFailure => (
+export const createTodoFailure = (payload: string): CreateTodoFailure => (
   {
     payload,
     type: 'CreateTodoFailure'
@@ -143,7 +141,7 @@ interface LoadTodosSuccess {
   payload: Todo[]
 };
 
-const loadTodosSuccess = (payload: Todo[]): LoadTodosSuccess => (
+export const loadTodosSuccess = (payload: Todo[]): LoadTodosSuccess => (
   {
     payload,
     type: 'LoadTodosSuccess',
@@ -155,7 +153,7 @@ interface LoadTodosFailure {
   payload: string
 };
 
-const loadTodosFailure = (payload: string): LoadTodosFailure => (
+export const loadTodosFailure = (payload: string): LoadTodosFailure => (
   {
     payload,
     type: 'LoadTodosFailure',

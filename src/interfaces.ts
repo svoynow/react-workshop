@@ -24,6 +24,11 @@ export const flipStatus = (status: Status): Status => {
   return status;
 };
 
+export const toggledStatus = (todos: Todo[]) => {
+  const activeCount = todos.filter(t => t.status === todoActive).length;
+  return activeCount > 0 ? todoCompleted : todoActive;  
+}
+
 export const showAll = ({ kind: 'ShowAll' });
 export type ShowAll = typeof showAll;
 

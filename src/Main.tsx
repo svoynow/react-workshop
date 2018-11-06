@@ -1,16 +1,16 @@
 import { RouteComponentProps } from '@reach/router';
 import React from "react";
 import { connect } from 'react-redux';
+import { makeTodo } from './data';
+import { FooterContainer } from './Footer';
+import { Header } from './Header';
+import { NowShowing, State, Status, Todo, toggledStatus  } from './interfaces';
+import { ListItem } from './ListItem';
 import { createTodo, 
   deleteTodo, 
   fetchTodos, 
   toggleAll,
   updateTodo } from './newActions';
-
-import { FooterContainer } from './Footer';
-import { Header } from './Header';
-import { NowShowing, State, Todo  } from './interfaces';
-import { ListItem } from './ListItem';
 
 // tslint:disable no-console
 const debug = (msg: string) => () => console.log(msg);
@@ -18,10 +18,10 @@ const debug = (msg: string) => () => console.log(msg);
 interface Props extends RouteComponentProps {
   nowShowing: NowShowing
   data: Todo[],
-  addTodo: (t: string) => void,
+  addTodo: (t: Todo) => void,
   deleteTodo: (t: Todo) => void,
   fetchTodos: () => void,
-  toggleAll: (t: Todo[]) => void,
+  toggleAll: (t: Todo[], s: Status) => void,
   updateTodo: (t: Todo) => void 
 }
 
@@ -32,11 +32,12 @@ export class Main extends React.PureComponent<Props, {}> {
   }
 
   createTodo = (title: string) => {
-    this.props.addTodo(title);
+    this.props.addTodo(makeTodo(title));
   };
 
   handleToggleAll = () => {
-    this.props.toggleAll(this.filterTodos());
+    const toToggle = this.filterTodos()
+    this.props.toggleAll(toToggle, toggledStatus(toToggle));
   };
 
   handleUpdateTodo = (todo: Todo) => {

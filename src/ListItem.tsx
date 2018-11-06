@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import React from 'react';
 import { flipStatus, Todo } from './interfaces';
  
-interface State {
+export interface State {
     edit: boolean,
     value: string
 };
 
-interface ListItemProps {
+export interface ListItemProps {
     item: Todo,
     handleDestroy: (t: Todo) => void,
     handleEdit: (t: Todo) => void
